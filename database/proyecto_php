@@ -1,201 +1,237 @@
 
-CREATE DATABASE IF NOT EXISTS proyecto_php CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE proyecto_php CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE proyecto_php;
 
+-- =========================
 -- TABLAS MAESTRAS
+-- =========================
 
-CREATE TABLE IF NOT EXISTS usuarios (
-    id       INT AUTO_INCREMENT PRIMARY KEY,
-    nombre   VARCHAR(100) NOT NULL,
-    correo   VARCHAR(100) NOT NULL UNIQUE,
-    clave    VARCHAR(255) NOT NULL,
-    estado   TINYINT(1) NOT NULL DEFAULT 1
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    correo VARCHAR(100) NOT NULL UNIQUE,
+    clave VARCHAR(255) NOT NULL,
+    estado TINYINT(1) NOT NULL DEFAULT 1
 );
 
-CREATE TABLE IF NOT EXISTS roles (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_rol  VARCHAR(50)  NOT NULL UNIQUE,
+CREATE TABLE roles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_rol VARCHAR(50) NOT NULL UNIQUE,
     descripcion VARCHAR(200)
 );
 
-CREATE TABLE IF NOT EXISTS permisos (
-    id              INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_permiso  VARCHAR(100) NOT NULL,
-    clave_acceso    VARCHAR(100) NOT NULL UNIQUE  -- ej: crear_venta
+CREATE TABLE permisos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_permiso VARCHAR(100) NOT NULL,
+    clave_acceso VARCHAR(100) NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS menus (
-    id     INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(100) NOT NULL,
-    url    VARCHAR(200) NOT NULL,
-    icono  VARCHAR(100)
+CREATE TABLE menus (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(100) NOT NULL UNIQUE,
+    url VARCHAR(200) NOT NULL UNIQUE,
+    icono VARCHAR(100)
 );
 
--- TABLAS DE UNIÓN 
+-- =========================
+-- TABLAS DE UNIÓN
+-- =========================
 
-CREATE TABLE IF NOT EXISTS usuarios_roles (
+CREATE TABLE usuarios_roles (
     usuario_id INT NOT NULL,
-    rol_id     INT NOT NULL,
+    rol_id INT NOT NULL,
     PRIMARY KEY (usuario_id, rol_id),
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-    FOREIGN KEY (rol_id)     REFERENCES roles(id)    ON DELETE CASCADE
+    FOREIGN KEY (rol_id) REFERENCES roles(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS roles_permisos (
-    rol_id     INT NOT NULL,
+CREATE TABLE roles_permisos (
+    rol_id INT NOT NULL,
     permiso_id INT NOT NULL,
     PRIMARY KEY (rol_id, permiso_id),
-    FOREIGN KEY (rol_id)     REFERENCES roles(id)   ON DELETE CASCADE,
+    FOREIGN KEY (rol_id) REFERENCES roles(id) ON DELETE CASCADE,
     FOREIGN KEY (permiso_id) REFERENCES permisos(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS roles_menus (
-    rol_id  INT NOT NULL,
+CREATE TABLE roles_menus (
+    rol_id INT NOT NULL,
     menu_id INT NOT NULL,
     PRIMARY KEY (rol_id, menu_id),
-    FOREIGN KEY (rol_id)  REFERENCES roles(id) ON DELETE CASCADE,
+    FOREIGN KEY (rol_id) REFERENCES roles(id) ON DELETE CASCADE,
     FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE
 );
 
--- SEEDING: ROLES
+-- =========================
+-- ROLES
+-- =========================
 
-INSERT INTO roles (nombre_rol, descripcion) VALUES
-('super_admin', 'Acceso total al sistema'),
-('vendedor',    'Gestión de ventas y clientes'),
-('almacenero',  'Gestión de categorías y productos');
+INSERT INTO roles (id, nombre_rol, descripcion) VALUES
+(1, 'super_admin', 'Acceso total al sistema'),
+(2, 'vendedor', 'Gestión de ventas y clientes'),
+(3, 'almacenero', 'Gestión de categorías y productos');
 
--- SEEDING: PERMISOS (por módulo + acción)
+-- =========================
+-- PERMISOS
+-- =========================
 
 INSERT INTO permisos (nombre_permiso, clave_acceso) VALUES
+-- Usuarios
+('Crear usuario', 'crear_usuario'),
+('Editar usuario', 'editar_usuario'),
+('Listar usuarios', 'listar_usuario'),
+('Ver usuario', 'ver_usuario'),
+('Eliminar usuario', 'eliminar_usuario'),
+
 -- Categorías
-('Crear categoría',   'crear_categoria'),
-('Editar categoría',  'editar_categoria'),
+('Crear categoría', 'crear_categoria'),
+('Editar categoría', 'editar_categoria'),
 ('Listar categorías', 'listar_categoria'),
-('Ver categoría',     'ver_categoria'),
-('Eliminar categoría','eliminar_categoria'),
+('Ver categoría', 'ver_categoria'),
+('Eliminar categoría', 'eliminar_categoria'),
+
 -- Productos
-('Crear producto',    'crear_producto'),
-('Editar producto',   'editar_producto'),
-('Listar productos',  'listar_producto'),
-('Ver producto',      'ver_producto'),
+('Crear producto', 'crear_producto'),
+('Editar producto', 'editar_producto'),
+('Listar productos', 'listar_producto'),
+('Ver producto', 'ver_producto'),
 ('Eliminar producto', 'eliminar_producto'),
+
 -- Ventas
-('Crear venta',       'crear_venta'),
-('Editar venta',      'editar_venta'),
-('Listar ventas',     'listar_venta'),
-('Ver venta',         'ver_venta'),
-('Eliminar venta',    'eliminar_venta'),
+('Crear venta', 'crear_venta'),
+('Editar venta', 'editar_venta'),
+('Listar ventas', 'listar_venta'),
+('Ver venta', 'ver_venta'),
+('Eliminar venta', 'eliminar_venta'),
+
 -- Clientes
-('Crear cliente',     'crear_cliente'),
-('Editar cliente',    'editar_cliente'),
-('Listar clientes',   'listar_cliente'),
-('Ver cliente',       'ver_cliente'),
-('Eliminar cliente',  'eliminar_cliente');
+('Crear cliente', 'crear_cliente'),
+('Editar cliente', 'editar_cliente'),
+('Listar clientes', 'listar_cliente'),
+('Ver cliente', 'ver_cliente'),
+('Eliminar cliente', 'eliminar_cliente');
 
--- SEEDING: MENÚS
+-- =========================
+-- MENÚS
+-- =========================
 
-INSERT INTO menus (titulo, url, icono) VALUES
-('Categorías', '/categorias', 'bi-tags'),
-('Productos',  '/productos',  'bi-box'),
-('Ventas',     '/ventas',     'bi-cart'),
-('Clientes',   '/clientes',   'bi-people');
+INSERT INTO menus (id, titulo, url, icono) VALUES
+(1, 'Categorías', '/categorias', 'bi-tags'),
+(2, 'Productos', '/productos', 'bi-box'),
+(3, 'Ventas', '/ventas', 'bi-cart'),
+(4, 'Clientes', '/clientes', 'bi-people'),
+(5, 'Usuarios', '/users', 'bi-person');
 
--- SEEDING: USUARIOS DE PRUEBA
--- (claves: admin123 / vendedor123 / almacen123 — hash bcrypt)
+-- =========================
+-- USUARIOS
+-- Contraseñas:
+-- admin@test.com     => admin123
+-- vendedor@test.com  => vendedor123
+-- almacen@test.com   => almacen123
+-- =========================
 
-INSERT INTO usuarios (nombre, correo, clave, estado) VALUES
-('Super Admin',  'admin@test.com',    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1),
-('Juan Vendedor','vendedor@test.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1),
-('Cullampe Almacen','almacen@test.com',  '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1);
+INSERT INTO usuarios (id, nombre, correo, clave, estado) VALUES
+(1, 'Super Admin', 'admin@test.com', '$2y$12$f1p25weKXxFfMMnb2H953uk4kTpshqbOBvGR4x68fpfONfmiE5Ksa', 1),
+(2, 'Juan Vendedor', 'vendedor@test.com', '$2y$12$/j9g9z/kscDegG/UNyd1SuSnBxQB.dnkdL0xKsN/G2jcE0u5.8ki2', 1),
+(3, 'Cullampe Almacen', 'almacen@test.com', '$2y$12$aEzziMY.4uED9Q4geLpt0.n4CuCRv.Vk3W7hR3u8jlkUcxspRcJGq', 1);
 
--- Asignar roles a usuarios
+-- =========================
+-- ASIGNAR ROLES
+-- =========================
+
 INSERT INTO usuarios_roles (usuario_id, rol_id) VALUES
-(1, 1),  -- admin → super_admin
-(2, 2),  -- Juan  → vendedor
-(3, 3);  -- Cullampe → almacenero
+(1, 1),
+(2, 2),
+(3, 3);
 
--- CONFIGURACIÓN DE ACCESOS POR ROL
--- === SUPER ADMIN: todos los permisos ===
+-- =========================
+-- PERMISOS POR ROL
+-- =========================
+
+-- Super Admin: todos los permisos
 INSERT INTO roles_permisos (rol_id, permiso_id)
 SELECT 1, id FROM permisos;
 
--- === VENDEDOR (rol_id = 2) ===
--- Categorías: listar + ver
--- Productos:  listar + ver
--- Ventas:     crear + listar
--- Clientes:   crear + editar + eliminar + listar + ver
--- NO: eliminar_venta, editar_venta
+-- Vendedor
 INSERT INTO roles_permisos (rol_id, permiso_id)
 SELECT 2, id FROM permisos
 WHERE clave_acceso IN (
     'listar_categoria', 'ver_categoria',
-    'listar_producto',  'ver_producto',
-    'crear_venta',      'listar_venta', 'ver_venta',
-    'crear_cliente',    'editar_cliente', 'eliminar_cliente',
-    'listar_cliente',   'ver_cliente'
+    'listar_producto', 'ver_producto',
+    'crear_venta', 'listar_venta', 'ver_venta',
+    'crear_cliente', 'editar_cliente', 'eliminar_cliente',
+    'listar_cliente', 'ver_cliente'
 );
 
--- === ALMACENERO (rol_id = 3) ===
--- Categorías: acceso total
--- Productos:  acceso total
--- NO ventas, NO clientes
+-- Almacenero
 INSERT INTO roles_permisos (rol_id, permiso_id)
 SELECT 3, id FROM permisos
 WHERE clave_acceso IN (
-    'crear_categoria',   'editar_categoria', 'listar_categoria',
-    'ver_categoria',     'eliminar_categoria',
-    'crear_producto',    'editar_producto',  'listar_producto',
-    'ver_producto',      'eliminar_producto'
+    'crear_categoria', 'editar_categoria', 'listar_categoria',
+    'ver_categoria', 'eliminar_categoria',
+    'crear_producto', 'editar_producto', 'listar_producto',
+    'ver_producto', 'eliminar_producto'
 );
 
+-- =========================
 -- MENÚS POR ROL
--- Super admin: todos los menús
+-- =========================
+
+-- Super Admin: todos los menús, incluido Usuarios
 INSERT INTO roles_menus (rol_id, menu_id)
 SELECT 1, id FROM menus;
 
--- Vendedor: Ventas + Clientes + (Categorías y Productos solo lectura, igual se muestra menú)
+-- Vendedor
 INSERT INTO roles_menus (rol_id, menu_id)
-SELECT 2, id FROM menus WHERE titulo IN ('Categorías', 'Productos', 'Ventas', 'Clientes');
+SELECT 2, id FROM menus
+WHERE titulo IN ('Categorías', 'Productos', 'Ventas', 'Clientes');
 
--- Almacenero: solo Categorías y Productos
+-- Almacenero
 INSERT INTO roles_menus (rol_id, menu_id)
-SELECT 3, id FROM menus WHERE titulo IN ('Categorías', 'Productos');
+SELECT 3, id FROM menus
+WHERE titulo IN ('Categorías', 'Productos');
+
+-- =========================
+-- TABLA VENTAS
+-- =========================
 
 CREATE TABLE ventas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     cliente VARCHAR(100) NOT NULL,
-    monto_total DECIMAL(10, 2) NOT NULL,
+    monto_total DECIMAL(10,2) NOT NULL,
     fecha DATE NOT NULL
 );
 
 INSERT INTO ventas (id, cliente, monto_total, fecha) VALUES
-(1, 'Ana María Gómez', 250.00, '2026-05-25'),
-(2, 'Carlos Ruiz', 180.50, '2026-05-25'),
-(3, 'Lucía Torres', 320.00, '2026-05-25');
+(1001, 'Ana María Gómez', 250.00, '2026-05-25'),
+(1002, 'Carlos Ruiz', 180.50, '2026-05-25'),
+(1003, 'Lucía Torres', 320.00, '2026-05-25');
 
+-- =========================
+-- BASE DE DATOS EAV
+-- =========================
 
--- BASE DE DATOS EAV --
-CREATE TABLE IF NOT EXISTS categorias (
+CREATE TABLE categorias (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS productos (
+CREATE TABLE productos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(200) NOT NULL,
     id_categoria INT NOT NULL,
     FOREIGN KEY (id_categoria) REFERENCES categorias(id)
 );
 
-CREATE TABLE IF NOT EXISTS atributos (
+CREATE TABLE atributos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(150) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS valores_productos (
-	id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE valores_productos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     id_producto INT NOT NULL,
     id_atributo INT NOT NULL,
+    valor VARCHAR(150) NOT NULL,
     FOREIGN KEY (id_producto) REFERENCES productos(id),
     FOREIGN KEY (id_atributo) REFERENCES atributos(id)
 );
