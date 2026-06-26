@@ -1,7 +1,3 @@
--- ============================================================
--- FASE 1: BASE DE DATOS RBAC
--- proyecto_php
--- ============================================================
 
 CREATE DATABASE IF NOT EXISTS proyecto_php CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE proyecto_php;
@@ -118,10 +114,7 @@ INSERT INTO usuarios_roles (usuario_id, rol_id) VALUES
 (2, 2),  -- Juan  → vendedor
 (3, 3);  -- Cullampe → almacenero
 
--- ------------------------------------------------------------
 -- CONFIGURACIÓN DE ACCESOS POR ROL
--- ------------------------------------------------------------
-
 -- === SUPER ADMIN: todos los permisos ===
 INSERT INTO roles_permisos (rol_id, permiso_id)
 SELECT 1, id FROM permisos;
@@ -155,10 +148,7 @@ WHERE clave_acceso IN (
     'ver_producto',      'eliminar_producto'
 );
 
--- ------------------------------------------------------------
 -- MENÚS POR ROL
--- ------------------------------------------------------------
-
 -- Super admin: todos los menús
 INSERT INTO roles_menus (rol_id, menu_id)
 SELECT 1, id FROM menus;
@@ -183,3 +173,29 @@ INSERT INTO ventas (id, cliente, monto_total, fecha) VALUES
 (2, 'Carlos Ruiz', 180.50, '2026-05-25'),
 (3, 'Lucía Torres', 320.00, '2026-05-25');
 
+
+-- BASE DE DATOS EAV --
+CREATE TABLE IF NOT EXISTS categorias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS productos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(200) NOT NULL,
+    id_categoria INT NOT NULL,
+    FOREIGN KEY (id_categoria) REFERENCES categorias(id)
+);
+
+CREATE TABLE IF NOT EXISTS atributos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(150) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS valores_productos (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    id_producto INT NOT NULL,
+    id_atributo INT NOT NULL,
+    FOREIGN KEY (id_producto) REFERENCES productos(id),
+    FOREIGN KEY (id_atributo) REFERENCES atributos(id)
+);
