@@ -21,21 +21,19 @@ class UsersController extends Controller {
 
     public function listar($params = []) {
         $data = $this->model->where(["estado=1"])
-                            ->orderBy("users.id", "DESC")
+                            ->orderBy("usuarios.id", "DESC")
                             ->get();
-        // $this->views->render($this, "listado", $data); // Cargar la view con PHP (sin Javascript)
-        $this->views->render($this, "listado_async", $data); /* Cargar la view con Javascript (fetch)
-                                                                para obtener los datos de forma asíncrona
-                                                                desde el método cargarUsuariosAsync() */
+
+        $this->views->render("users/listado_async", $data);
     }
 
     public function cargarUsuariosAsync() {
         $data = $this->model->where(["estado=1"])
-                            ->orderBy("users.id", "DESC")
+                            ->orderBy("usuarios.id", "DESC")
                             ->get();
-        $json_resp = json_encode($data);
+
         header("Content-Type: application/json");
-        echo $json_resp;
+        echo json_encode($data);
     }
 
     public function crear($params = []) {
