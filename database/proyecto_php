@@ -1,4 +1,3 @@
-
 CREATE DATABASE proyecto_php CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE proyecto_php;
 
@@ -235,3 +234,69 @@ CREATE TABLE valores_productos (
     FOREIGN KEY (id_producto) REFERENCES productos(id),
     FOREIGN KEY (id_atributo) REFERENCES atributos(id)
 );
+
+-- DATOS DE PRUEBA EAV: CATEGORÍAS
+INSERT INTO categorias (id, nombre) VALUES
+(1, 'Ropa de Hombre'),
+(2, 'Teléfonos'),
+(3, 'Ropa de Mujer'),
+(4, 'Electrónicos'),
+(5, 'Accesorios'),
+(6, 'Hogar'),
+(7, 'Calzado');
+
+-- DATOS DE PRUEBA EAV: ATRIBUTOS
+INSERT INTO atributos (id, nombre) VALUES
+(1, 'Marca'),
+(2, 'Color'),
+(3, 'Talla'),
+(4, 'Año'),
+(5, 'Sist. Operativo'),
+(6, 'Almacenamiento'),
+(7, 'Material'),
+(8, 'Garantía'),
+(9, 'Cantidad'),
+(10, 'Modelo'),
+(11, 'Peso');
+
+-- DATOS DE PRUEBA EAV: PRODUCTOS
+INSERT INTO productos (id, nombre, id_categoria) VALUES
+(1, 'Polo Casual',      1),
+(2, 'Smartphone X1',    2),
+(3, 'Vestido Veraniego',3),
+(4, 'Laptop Pro 15',    4),
+(5, 'Auriculares BT',   4),
+(6, 'Lámpara Mesa',     6),
+(7, 'Zapatillas Run',   7);
+
+-- DATOS DE PRUEBA EAV: VALORES DE PRODUCTOS
+INSERT INTO valores_productos (id_producto, id_atributo, valor) VALUES
+(1, 1, 'Lacoste'),
+(1, 2, 'Rojo'),
+(1, 3, 'L'),
+(2, 1, 'Samsung'),
+(2, 4, '2025'),
+(2, 5, 'Android 15'),
+(2, 6, '256GB'),
+(2, 2, 'Azul'),
+(3, 1, 'Zara'),
+(3, 2, 'Blanco'),
+(3, 3, 'M'),
+(3, 7, 'Algodón'),
+(4, 1, 'HP'),
+(4, 4, '2024'),
+(4, 8, '2 años'),
+(4, 9, '1'),
+(5, 1, 'Sony'),
+(5, 2, 'Negro'),
+(5, 8, '1 año'),
+(5, 10, 'WF-1000XM5'),
+(6, 1, 'Philips'),
+(6, 2, 'Dorado'),
+(6, 9, '2'),
+(6, 11, '1.2kg'),
+(7, 1, 'Nike'),
+(7, 2, 'Gris'),
+(7, 3, '42'),
+(7, 7, 'Sintético'),
+(7, 8, '6 meses');
