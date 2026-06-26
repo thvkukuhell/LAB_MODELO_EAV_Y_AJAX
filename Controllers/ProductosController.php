@@ -80,6 +80,27 @@ class ProductosController extends Controller {
         }
     }
 
+    public function apiFiltrar($params = []) {
+        $categoria_id = $_GET["categoria_id"] ?? "";
+        $q = $_GET["q"] ?? "";
+        $filtrosJson = $_GET["filtros"] ?? "{}";
+
+        $filtros = json_decode($filtrosJson, true);
+
+        if (!is_array($filtros)) {
+            $filtros = [];
+        }
+
+        try {
+            $productos = $this->model->filtrarProductos($categoria_id, $q, $filtros);
+            $this->jsonResponse($productos);
+        } catch (PDOException $e) {
+            $this->jsonResponse([
+                "error" => "Error al filtrar productos"
+            ], 500);
+        }
+    }
+
     private function jsonResponse($data, $code = 200) {
         http_response_code($code);
 
