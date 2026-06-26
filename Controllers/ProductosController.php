@@ -45,9 +45,9 @@ class ProductosController extends Controller {
                         a.nombre AS atributo,
                         vp.valor AS valor
                     FROM categorias c
-                    INNER JOIN productos p ON p.categoria_id = c.id
-                    INNER JOIN valores_productos vp ON vp.producto_id = p.id
-                    INNER JOIN atributos a ON a.id = vp.atributo_id
+                    INNER JOIN productos p ON p.id_categoria = c.id
+                    INNER JOIN valores_productos vp ON vp.id_producto = p.id
+                    INNER JOIN atributos a ON a.id = vp.id_atributo
                     WHERE c.id = :categoria_id
                     ORDER BY a.nombre ASC, vp.valor ASC";
 
