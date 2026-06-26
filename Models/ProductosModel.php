@@ -7,6 +7,30 @@ class ProductosModel extends Model {
         $this->table = "productos";
     }
 
+    public function allWithCategoria() {
+        $sql = "SELECT p.id, p.nombre, c.nombre AS categoria
+                FROM productos p
+                LEFT JOIN categorias c ON c.id = p.id_categoria
+                ORDER BY p.id DESC";
+
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function buscarPorNombre($q) {
+        $sql = "SELECT p.id, p.nombre, c.nombre AS categoria
+                FROM productos p
+                LEFT JOIN categorias c ON c.id = p.id_categoria
+                WHERE p.nombre LIKE :q
+                ORDER BY p.id DESC";
+
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->bindValue(":q", "%" . $q . "%", PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     /*
      FASE 4:
         Devuelve los atributos y valores únicos de una categoría.
