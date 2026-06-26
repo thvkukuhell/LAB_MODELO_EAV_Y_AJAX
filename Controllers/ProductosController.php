@@ -2,6 +2,17 @@
 
 class ProductosController extends Controller {
 
+    public function index($params = []) {
+        $productos = $this->model->allWithCategoria();
+        $this->views->render("productos/index", ["productos" => $productos]);
+    }
+
+    public function buscar($params = []) {
+        $q = $_GET["q"] ?? "";
+        $productos = $this->model->buscarPorNombre($q);
+        $this->jsonResponse($productos);
+    }
+
     public function apiGetFiltros($params = []) {
         $categoria_id = $params[0] ?? ($_GET['categoria_id'] ?? null);
 
